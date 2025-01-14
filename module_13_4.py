@@ -1,10 +1,10 @@
-from aiogram import Bot, Dispatcher, types, executor
+from aiogram import Bot, Dispatcher, executor
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
 
 
-api = ''
+api = '7680362534:AAFxREcENIpGw2eLIBR25rgd7xjTql0mjyQ'
 bot = Bot(token = api)
 dp = Dispatcher(bot, storage=MemoryStorage())
 
@@ -12,6 +12,10 @@ class UserState(StatesGroup):
     age = State()
     growth = State()
     weight = State()
+
+@dp.message_handler(commands = ['start'])
+async def start_message(message):
+    await message.answer('Привет! Я бот помогающий твоему здоровью.')
 
 @dp.message_handler(text = 'Calories')
 async def age_set(message):
@@ -37,6 +41,11 @@ async def send_calories(message, state):
     res = ((10 * int(data['weight'])) + (6.25 * int(data['growth'])) - (5 * int(data['age'])) + 5)
     await message.answer(f'Ваша норма калорий {res} в день')
     await state.finish()
+
+@dp.message_handler()
+async def all_massage(message):
+    await message.answer('Введите команду /start, чтобы начать общение.')
+
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
